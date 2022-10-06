@@ -73,13 +73,20 @@ class Tar extends Archive
         try {
             $archiveFile = new PharData($this->backup);
             $directory = is_array($folder) ? Yii::getAlias($folder['path']) : Yii::getAlias($folder);
-            $regex = is_array($folder) ? $folder['regex'] : null;
-            $files = $this->getDirectoryFiles($directory, $regex);
+            $recursive = is_array($folder) && isset($folder['recursive']) ? $folder['recursive'] : false;
+            $regex = is_array($folder) && isset($folder['regex']) ? $folder['regex'] : null;
+            $files = $this->getDirectoryFiles($directory, $regex, $recursive);
 
             foreach ($files as $file) {
                 $filePath = $file->getRealPath();
                 $relativePath = $name . DIRECTORY_SEPARATOR . substr($filePath, strlen($directory) + 1);
-                $archiveFile->addFile($filePath, $relativePath);
+                if (!$file->isDir())
+                {
+                    $archiveFile->addFile($filePath, $relativePath);
+                } else {
+                    if($relativePath !== false)
+                        $archiveFile->addEmptyDir($relativePath);
+                }
             }
         } catch (UnexpectedValueException $ex) {
             Yii::error("Could not open '{$this->backup}'. Details: " . $ex->getMessage());

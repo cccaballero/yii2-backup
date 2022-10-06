@@ -257,12 +257,12 @@ class Backup extends Component
         if (!is_int($this->expireTime)) {
             throw new InvalidConfigException('"' . get_class($this) . '::expireTime" should be integer, "' . gettype($this->expireTime) . '" given.');
         }
-        if (self::EXPIRE_TIME_MIN > $this->expireTime) {
-            throw new InvalidConfigException('"' . get_class($this) . '::expireTime" should be at least ' . self::EXPIRE_TIME_MIN . ' seconds');
-        }
-        if (self::EXPIRE_TIME_MAX < $this->expireTime) {
-            throw new InvalidConfigException('"' . get_class($this) . '::expireTime" should be at most ' . self::EXPIRE_TIME_MAX . ' seconds');
-        }
+//        if (self::EXPIRE_TIME_MIN > $this->expireTime) {
+//            throw new InvalidConfigException('"' . get_class($this) . '::expireTime" should be at least ' . self::EXPIRE_TIME_MIN . ' seconds');
+//        }
+//        if (self::EXPIRE_TIME_MAX < $this->expireTime) {
+//            throw new InvalidConfigException('"' . get_class($this) . '::expireTime" should be at most ' . self::EXPIRE_TIME_MAX . ' seconds');
+//        }
         return true;
     }
 
@@ -289,9 +289,9 @@ class Backup extends Component
                 if (!array_key_exists('path', $directory)) {
                     throw new InvalidConfigException('Entry "' . $name . '" of ' . get_class($this) . '::directories" does not have key "path"');
                 }
-                if (!array_key_exists('regex', $directory)) {
-                    throw new InvalidConfigException('Entry "' . $name . '" of ' . get_class($this) . '::directories" does not have key "regex"');
-                }
+//                if (!array_key_exists('regex', $directory)) {
+//                    throw new InvalidConfigException('Entry "' . $name . '" of ' . get_class($this) . '::directories" does not have key "regex"');
+//                }
             }
 
             $path = is_array($directory) ? Yii::getAlias($directory['path']) : Yii::getAlias($directory);

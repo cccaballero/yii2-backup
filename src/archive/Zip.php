@@ -65,13 +65,21 @@ class Zip extends Archive
         $zipFile = new ZipArchive();
         $zipFile->open($this->backup, ZipArchive::CREATE);
         $directory = is_array($folder) ? Yii::getAlias($folder['path']) : Yii::getAlias($folder);
-        $regex = is_array($folder) ? $folder['regex'] : null;
-        $files = $this->getDirectoryFiles($directory, $regex);
+        $recursive = is_array($folder) && isset($folder['recursive']) ? $folder['recursive'] : false;
+        $regex = is_array($folder) && isset($folder['regex']) ? $folder['regex'] : null;
+        $files = $this->getDirectoryFiles($directory, $regex, $recursive);
 
         foreach ($files as $file) {
             $filePath = $file->getRealPath();
             $relativePath = $name . DIRECTORY_SEPARATOR . substr($filePath, strlen($directory) + 1);
-            $zipFile->addFile($filePath, $relativePath);
+            if (!$file->isDir())
+            {
+                // Add current file to archive
+                $zipFile->addFile($filePath, $relativePath);
+            }else {
+                if($relativePath !== false)
+                    $zipFile->addEmptyDir($relativePath);
+            }
         }
         return $zipFile->close();
     }

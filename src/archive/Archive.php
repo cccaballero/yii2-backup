@@ -108,11 +108,15 @@ abstract class Archive extends Component
      * @param string $pattern Regular expression for searching files
      * @return \RecursiveIteratorIterator Iterator with found files
      */
-    protected function getDirectoryFiles($path, $pattern = null)
+    protected function getDirectoryFiles($path, $pattern = null, $recursive=false)
     {
-        $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
-        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($path, $pattern) {
-                if (!$current->isFile()) {
+        if ($recursive){
+            $directory = new RecursiveDirectoryIterator($path, RecursiveIteratorIterator::LEAVES_ONLY);
+        } else {
+            $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
+        }
+        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($path, $pattern, $recursive) {
+                if (!$recursive && !$current->isFile()) {
                     return false;
                 }
 
